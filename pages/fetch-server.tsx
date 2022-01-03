@@ -3,6 +3,7 @@ import Head from "next/head";
 import { Post } from "@prisma/client";
 import { prisma } from "libs/prisma";
 import styles from "styles/Home.module.css";
+import { getSession } from "next-auth/react";
 
 type props = {
   posts: Post[];
@@ -21,7 +22,16 @@ const FetchServer: NextPage<props> = ({ posts }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession(context);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
   const posts = await prisma.post.findMany();
 
   return { props: { posts } };

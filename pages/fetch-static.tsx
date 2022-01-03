@@ -3,12 +3,24 @@ import Head from "next/head";
 import { Post } from "@prisma/client";
 import { prisma } from "libs/prisma";
 import styles from "styles/Home.module.css";
+import Router from "next/router";
+import { useSession, getSession } from "next-auth/react";
 
 type props = {
   posts: Post[];
 };
 
 const FetchStatic: NextPage<props> = ({ posts }) => {
+  const { data: session, status } = useSession();
+  // 認証状態を取得するまでローディングを表示
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
+
+  // 非認証状態なので "/" にリダイレクト
+  if (status === "unauthenticated") {
+    Router.push("/");
+  }
   return (
     <div className={styles.container}>
       <Head>
