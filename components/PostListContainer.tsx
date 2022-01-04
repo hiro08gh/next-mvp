@@ -13,5 +13,5 @@ export const PostListContainer: React.VFC = () => {
     return <div>記事がありません</div>;
   }
 
-  return <PostList posts={data} />;
+  return <PostList {...data} />;
 };
